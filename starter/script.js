@@ -85,6 +85,7 @@ const displayMovements = function(movements) {
   });
 };
 
+/*
 // Funzione per calcolare e visualizzare il saldo
 const calcDisplayBalance = function (movements) {
   // Calcola il saldo totale sommando tutti i movimenti
@@ -92,9 +93,14 @@ const calcDisplayBalance = function (movements) {
   // Visualizza il saldo nel label appropriato
   labelBalance.textContent = `${balance} EUR`;
 };
+*/
+const calcDisplayBalance = function (acc) {
+  acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${acc.balance}€`;
+};
 
 // Funzione per calcolare e visualizzare il riepilogo
-const calcDisplaySummary = function (movements) {
+const calcDisplaySummary = function (acc) {
   // Calcola il totale degli introiti
   const incomes = acc.movements
     .filter(mov => mov > 0) // Filtra solo i movimenti positivi (introiti)
@@ -135,6 +141,133 @@ const createUsernames = function (accs) {
 // Crea i nomi utente per tutti gli account
 createUsernames(accounts);
 
+const updateUI = function (acc) {
+  // Display movements
+  displayMovements(acc.movements);
+
+  // Display balance
+  calcDisplayBalance(acc);
+
+  // Display summary
+  calcDisplaySummary(acc);
+};
+
+let currentAccount
+
+// Gestore evento click per il pulsante di login (pulsante di accesso)
+btnLogin.addEventListener('click', function(e){
+  // Impedisce l'invio del modulo predefinito se applicabile (ad esempio, se il pulsante si trova all'interno di un modulo di login)
+  e.preventDefault();
+
+  // Cerca l'account corrispondente in base al nome utente inserito in inputLoginUsername (campo nome utente di login)
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value
+  );
+  console.log(currentAccount); // A scopo di debug (può essere rimosso in seguito)
+
+  if (currentAccount && currentAccount.pin === Number(inputLoginPin.value)) {
+    // Accesso effettuato correttamente: aggiorna l'interfaccia utente e visualizza il messaggio di benvenuto
+    labelWelcome.textContent = `Benvenuto ${currentAccount.owner.split(' ')[0]}`;  // Imposta il testo dell'etichetta di benvenuto
+    containerApp.computedStyleMap.opacity = 100; // Rendi visibile l'interfaccia utente dell'applicazione
+
+    // Pulisce i campi di input di login
+    inputLoginPin.blur(); // Rimuove lo stato di focus dal campo PIN
+
+    // Aggiorna l'interfaccia utente con le informazioni dell'account corrente (chiama una funzione per aggiornare gli elementi dell'interfaccia utente)
+    updateUI(currentAccount);
+  } else {
+    // Accesso fallito: gestisce le credenziali errate (facoltativo)
+    console.error('Nome utente o PIN errati'); // Gestione errori di esempio (considera la visualizzazione di un messaggio all'utente)
+  }
+});
+
+// Gestore evento click per il pulsante di bonifico
+btnTransfer.addEventListener('click', function(e){
+  e.preventDefault();
+
+  // Ottiene l'importo del bonifico come numero
+  const amount = Number(inputTransferAmount.value);
+
+  // Trova il conto del destinatario in base al nome utente inserito in inputTransferTo (campo nome utente del destinatario del bonifico)
+  const receiverAcc = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+
+  // Pulisce i campi di input del bonifico
+  inputTransferAmount.value = inputTransferTo.value = '';
+
+  if (
+    amount > 0 && // Assicura un importo positivo
+    receiverAcc && // Assicura che il conto del destinatario sia stato trovato
+    currentAccount.balance >= amount && // Assicura un saldo sufficiente
+    receiverAcc.username !== currentAccount.username // Evita il bonifico a se stesso
+  ) {
+    // Il bonifico è valido: esegui il bonifico
+    currentAccount.movements.push(-amount); // Aggiungi un movimento negativo (prelievo)
+    receiverAcc.movements.push(amount); // Aggiungi un movimento positivo (deposito)
+
+    // Aggiorna l'interfaccia utente con le informazioni aggiornate sull'account (chiama una funzione per aggiornare gli elementi dell'interfaccia utente)
+    updateUI(currentAccount);
+  } else {
+    // Bonifico fallito: gestisci i tentativi di bonifico non validi (facoltativo)
+    console.error('Bonifico fallito: importo, destinatario o saldo insufficiente'); // Gestione errori di esempio (considera la visualizzazione di un messaggio di errore chiaro per l'utente)
+  }
+});
+
+// Gestore evento click per il pulsante di prestito
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  const amount = Number(inputLoanAmount.value);
+
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    // Il prestito è valido: aggiungi il movimento e aggiorna l'interfaccia utente
+    currentAccount.movements.push(amount);
+    updateUI(currentAccount);
+  } else {
+    // Richiesta di prestito non valida: gestisci le richieste di prestito non valide (facoltativo)
+    console.error('Richiesta di prestito fallita: importo non valido o movimenti precedenti insufficienti'); // Gestione errori di esempio (considera la visualizzazione di un messaggio di errore chiaro per l'utente)
+  }
+  inputLoanAmount.value = ''; 
+});
+
+// Gestore evento click per il pulsante di chiusura conto (pulsante per chiudere l'account)
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();  // Impedisce l'invio del modulo predefinito
+
+  if (
+    inputCloseUsername.value === currentAccount.username &&  // Controlla la corrispondenza di nome utente e PIN
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(  // Trova l'indice dell'account da chiudere
+      acc => acc.username === currentAccount.username
+    );
+    console.log(index); // A scopo di debug (può essere rimosso in seguito)
+
+    // Elimina l'account dall'array accounts
+    accounts.splice(index, 1);
+
+    // Nascondi l'interfaccia utente dell'applicazione
+    containerApp.style.opacity = 0;
+  } else {
+    // Chiusura del conto fallita: credenziali errate
+    console.error('Nome utente o PIN errati per la chiusura del conto'); // Gestione errori di esempio
+  }
+
+  // Pulisce i campi di input per la chiusura del conto
+  inputCloseUsername.value = inputClosePin.value = '';
+});
+
+let sorted = false; // Flag per tenere traccia dello stato di ordinamento
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();  // Impedisce l'invio del modulo predefinito
+
+  // Chiama la funzione displayMovements per visualizzare i movimenti (ordinati o non ordinati)
+  displayMovements(currentAccount.movements, !sorted);
+
+  // Inverte il flag sorted per indicare lo stato di ordinamento opposto
+  sorted = !sorted;
+});
 
 /////////////////////////////////////////////////
 // LECTURES

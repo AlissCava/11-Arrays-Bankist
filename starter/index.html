@@ -15,114 +15,137 @@
     <title>Bankist</title>
   </head>
   <body>
-    <!-- TOP NAVIGATION -->
+    <!-- Barra di navigazione superiore -->
     <nav>
+      <!-- Messaggio di benvenuto -->
       <p class="welcome">Log in to get started</p>
+      <!-- Logo dell'app -->
       <img src="logo.png" alt="Logo" class="logo" />
+      <!-- Form di login -->
       <form class="login">
-        <input
-          type="text"
-          placeholder="user"
-          class="login__input login__input--user"
-        />
-        <!-- In practice, use type="password" -->
-        <input
-          type="text"
-          placeholder="PIN"
-          maxlength="4"
-          class="login__input login__input--pin"
-        />
+        <!-- Campo per username -->
+        <input type="text" placeholder="user" class="login__input login__input--user" />
+        <!-- Campo per PIN (in pratica dovrebbe essere type="password") -->
+        <input type="text" placeholder="PIN" maxlength="4" class="login__input login__input--pin" />
+        <!-- Pulsante di login -->
         <button class="login__btn">&rarr;</button>
       </form>
     </nav>
 
+    <!-- Contenuto principale dell'app -->
     <main class="app">
-      <!-- BALANCE -->
+      <!-- Sezione del bilancio attuale -->
       <div class="balance">
         <div>
+          <!-- Etichetta del bilancio -->
           <p class="balance__label">Current balance</p>
-          <p class="balance__date">
-            As of <span class="date">05/03/2037</span>
-          </p>
+          <!-- Data del bilancio -->
+          <p class="balance__date">As of <span class="date">05/03/2037</span></p>
         </div>
+        <!-- Valore del bilancio -->
         <p class="balance__value">0000€</p>
       </div>
 
-      <!-- MOVEMENTS -->
+      <!-- Lista dei movimenti -->
       <div class="movements">
+        <!-- Riga di un movimento -->
         <div class="movements__row">
+          <!-- Tipo di movimento: deposito -->
           <div class="movements__type movements__type--deposit">2 deposit</div>
+          <!-- Data del movimento -->
           <div class="movements__date">3 days ago</div>
+          <!-- Valore del movimento -->
           <div class="movements__value">4 000€</div>
         </div>
         <div class="movements__row">
-          <div class="movements__type movements__type--withdrawal">
-            1 withdrawal
-          </div>
+          <!-- Tipo di movimento: prelievo -->
+          <div class="movements__type movements__type--withdrawal">1 withdrawal</div>
+          <!-- Data del movimento -->
           <div class="movements__date">24/01/2037</div>
+          <!-- Valore del movimento -->
           <div class="movements__value">-378€</div>
         </div>
       </div>
 
-      <!-- SUMMARY -->
+      <!-- Riepilogo delle transazioni -->
       <div class="summary">
+        <!-- Etichetta delle entrate -->
         <p class="summary__label">In</p>
+        <!-- Valore delle entrate -->
         <p class="summary__value summary__value--in">0000€</p>
+        <!-- Etichetta delle uscite -->
         <p class="summary__label">Out</p>
+        <!-- Valore delle uscite -->
         <p class="summary__value summary__value--out">0000€</p>
+        <!-- Etichetta degli interessi -->
         <p class="summary__label">Interest</p>
+        <!-- Valore degli interessi -->
         <p class="summary__value summary__value--interest">0000€</p>
+        <!-- Pulsante per ordinare i movimenti -->
         <button class="btn--sort">&downarrow; SORT</button>
       </div>
 
-      <!-- OPERATION: TRANSFERS -->
+      <!-- Sezione per trasferire denaro -->
       <div class="operation operation--transfer">
+        <!-- Intestazione della sezione -->
         <h2>Transfer money</h2>
+        <!-- Form per il trasferimento -->
         <form class="form form--transfer">
+          <!-- Campo per il destinatario -->
           <input type="text" class="form__input form__input--to" />
+          <!-- Campo per l'importo -->
           <input type="number" class="form__input form__input--amount" />
+          <!-- Pulsante per confermare il trasferimento -->
           <button class="form__btn form__btn--transfer">&rarr;</button>
+          <!-- Etichetta per il campo destinatario -->
           <label class="form__label">Transfer to</label>
+          <!-- Etichetta per il campo importo -->
           <label class="form__label">Amount</label>
         </form>
       </div>
 
-      <!-- OPERATION: LOAN -->
+      <!-- Sezione per richiedere un prestito -->
       <div class="operation operation--loan">
+        <!-- Intestazione della sezione -->
         <h2>Request loan</h2>
+        <!-- Form per la richiesta di prestito -->
         <form class="form form--loan">
+          <!-- Campo per l'importo del prestito -->
           <input type="number" class="form__input form__input--loan-amount" />
+          <!-- Pulsante per confermare la richiesta di prestito -->
           <button class="form__btn form__btn--loan">&rarr;</button>
+          <!-- Etichetta per il campo importo -->
           <label class="form__label form__label--loan">Amount</label>
         </form>
       </div>
 
-      <!-- OPERATION: CLOSE -->
+      <!-- Sezione per chiudere l'account -->
       <div class="operation operation--close">
+        <!-- Intestazione della sezione -->
         <h2>Close account</h2>
+        <!-- Form per la chiusura dell'account -->
         <form class="form form--close">
+          <!-- Campo per confermare username -->
           <input type="text" class="form__input form__input--user" />
-          <input
-            type="password"
-            maxlength="6"
-            class="form__input form__input--pin"
-          />
+          <!-- Campo per confermare PIN -->
+          <input type="password" maxlength="6" class="form__input form__input--pin" />
+          <!-- Pulsante per confermare la chiusura -->
           <button class="form__btn form__btn--close">&rarr;</button>
+          <!-- Etichetta per il campo conferma username -->
           <label class="form__label">Confirm user</label>
+          <!-- Etichetta per il campo conferma PIN -->
           <label class="form__label">Confirm PIN</label>
         </form>
       </div>
 
-      <!-- LOGOUT TIMER -->
+      <!-- Timer di logout -->
       <p class="logout-timer">
+        <!-- Messaggio di logout -->
         You will be logged out in <span class="timer">05:00</span>
       </p>
     </main>
 
-    <!-- <footer>
-      &copy; by Jonas Schmedtmann. Don't claim as your own :)
-    </footer> -->
-
+    <!-- Collegamento al file JavaScript -->
     <script src="script.js"></script>
   </body>
 </html>
